@@ -133,9 +133,9 @@ Keys: `CPU_eCoresColor`, `CPU_pCoresColor`, `RAM_appColor`, `RAM_wiredColor`, `R
 Functional removal is done (the 4 modules don't load), but their **code + frameworks still ship**. To actually shrink, in rough order of value/safety:
 - [ ] **Delete the 4 module targets + source** (Net, Bluetooth, Clock, Remote) from `Stats.xcodeproj`. Tooling ready: `xcodeproj` gem installed at `~/.gem` (Ruby 2.6). ⚠️ `Net` is `import`ed by the **WidgetsExtension** (`Widgets/widgets.swift:18`) — must de-couple it there or drop the extension first.
 - [ ] **Drop the WidgetsExtension** (macOS desktop / Notification-Center widgets — a separate surface from the menubar; ~1.3 MB). Removes the Net coupling automatically. *(User chose "keep for now"; revisit when going for minimum size.)*
-- [ ] **Thin universal → arm64-only** (currently arm64 + x86_64) → roughly halves every binary. `ARCHS=arm64`, `ONLY_ACTIVE_ARCH=YES`.
+- [x] ~~Thin universal → arm64-only~~ — **N/A: already arm64-only.** Debug builds default to `ONLY_ACTIVE_ARCH=YES`; every binary verified arm64 (no x86_64 slice). Real app-shrink levers instead: a **Release build** (strips Debug symbols, ~19→~11 MB) and **removing the 4 dead module frameworks** (Net/Remote/Clock/Bluetooth ~3.7 MB, still embedded after functional-only removal).
 - [ ] **Remove SMC + Helper targets** — the privileged fan-control helper we never build. Fan/temperature *monitoring* (Sensors) works without it; only fan *control writes* need it.
-- [ ] **Strip localizations** — keep `en.lproj` only. Cosmetic/bundle-size; handoff warns it can add build friction — abandon if it costs a debugging session.
+- [x] **Strip localizations** — DONE (commit 582f3c9): en-only; removed 39 project refs + ~49 `.lproj` + the `.xcloc`; `knownRegions=en`; build green (no storyboards/Base, so safe). Also dropped the 1024px + 2 dup app icons. Repo 9.7→7.4 MB.
 - [ ] **Re-evaluate GPU/Sensors/Battery** if never enabled — they're off by default (Battery also self-disables on the Mini). Kept for now per user.
 
 Target: app **~17 MB → ~8 MB**, far fewer moving parts. Each step is: edit → build → run → commit (so any regression is bisectable).
