@@ -28,9 +28,10 @@ Menubar visual design: glyph forms, color, layout, labels.
 ## Lessons
 - Settle the core metric framing before investing in a palette — the earth-tone work was redone once RAM became "the bottleneck" and the scheme shifted to thresholds. — from 2026-06-29
 - Let the data shape the glyph: don't force a form (10 bars) the source can't feed; a single GPU bar is honest and more legible. — from 2026-06-29
+- Stats separate-status-item menubar order = the AppDelegate `modules` array order (mounted reversed → macOS places each new item leftmost). Deterministic, not random macOS behavior; reorder + rebuild, no ⌘-drag. (Corrects the earlier assumption that macOS arbitrarily controls order.) — from 2026-06-29
 
 ## Open Questions
-- [ ] Will macOS keep menubar order CPU·RAM·GPU·Disk, or does it need a one-time ⌘-drag? (separate NSStatusItems are macOS-ordered) — owner: Gerald — since: 2026-06-29
+- [x] Will macOS keep menubar order CPU·RAM·GPU·Disk, or does it need a ⌘-drag? — RESOLVED 2026-06-29: order = the AppDelegate `modules` array mount order (mounted reversed; macOS places each new NSStatusItem leftmost). Deterministic via the array; reordered to [CPU,RAM,GPU,Disk] + rebuilt, no ⌘-drag.
 - [ ] Offer GPU as 3 bars (overall/render/tiler) for closer CPU parity? — owner: Gerald — since: 2026-06-29
 
 ## Assumptions
@@ -41,4 +42,5 @@ Blocked by: none
 Feeds into: [[dev]]
 
 ## Session Log
+- 2026-06-29 (sync) — menubar reordered CPU·RAM·GPU·Disk in code; order mechanism resolved
 - 2026-06-29 — earth-tone → threshold pivot; numeric RAM; GPU added as 4th glyph
