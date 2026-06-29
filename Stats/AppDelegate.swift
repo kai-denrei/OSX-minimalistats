@@ -21,8 +21,8 @@ import GPU
 let updater = Updater(github: "exelban/stats", url: "https://api.mac-stats.com/release/latest")
 var modules: [Module] = [
     CPU(),
-    GPU(),
     RAM(),
+    GPU(),
     Disk(),
     Sensors(),
     Battery()
